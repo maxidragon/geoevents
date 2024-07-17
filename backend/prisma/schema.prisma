@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String
+  username       String
+  fullName       String
+  role           Role
+  confirmedAt    DateTime
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt()
+  eventOrganizer EventOrganizer[]
+  registrations  Registration[]
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  userId    String
+  type      TokenType
+  token     String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+}
+
+model Event {
+  id                      String               @id @default(uuid())
+  name                    String
+  startDate               DateTime
+  endDate                 DateTime
+  autoAcceptRegistrations Boolean
+  enableQualifications    Boolean
+  enableGroups            Boolean
+  enableKnockoutStage     Boolean
+  mapId                   String
+  map                     Map                  @relation(fields: [mapId], references: [id])
+  organizers              EventOrganizer[]
+  qualificationRounds     QualificationRound[]
+  registrations           Registration[]
+  groups                  Group[]
+}
+
+model EventOrganizer {
+  id      String @id @default(uuid())
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id])
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+}
+
+model Registration {
+  id                            String                          @id @default(uuid())
+  eventId                       String
+  event                         Event                           @relation(fields: [eventId], references: [id])
+  userId                        String
+  user                          User                            @relation(fields: [userId], references: [id])
+  qualificationResults          QualificationResult[]
+  registrationHistory           RegistrationHistory[]
+  GroupMember                   GroupMember[]
+  KnockoutStageMatchParticipant KnockoutStageMatchParticipant[]
+}
+
+model RegistrationHistory {
+  id             String             @id @default(uuid())
+  registrationId String
+  registration   Registration       @relation(fields: [registrationId], references: [id])
+  action         RegistrationAction
+  performedBy    String
+  timestamp      DateTime           @default(now())
+}
+
+model Map {
+  id    String  @id @default(uuid())
+  name  String
+  url   String
+  Event Event[]
+}
+
+model QualificationRound {
+  id                  String                @id @default(uuid())
+  eventId             String
+  event               Event                 @relation(fields: [eventId], references: [id])
+  QualificationResult QualificationResult[]
+}
+
+model QualificationResult {
+  id                   String             @id @default(uuid())
+  qualificationRoundId String
+  qualificationRound   QualificationRound @relation(fields: [qualificationRoundId], references: [id])
+  registrationId       String
+  registration         Registration       @relation(fields: [registrationId], references: [id])
+  score                Int
+  maxScore             Int
+  totalTime            Int
+}
+
+model Group {
+  id          String        @id @default(uuid())
+  name        String
+  eventId     String
+  event       Event         @relation(fields: [eventId], references: [id])
+  GroupMember GroupMember[]
+  GroupMatch  GroupMatch[]
+}
+
+model GroupMember {
+  id                    String                  @id @default(uuid())
+  groupId               String
+  group                 Group                   @relation(fields: [groupId], references: [id])
+  registrationId        String
+  registration          Registration            @relation(fields: [registrationId], references: [id])
+  GroupMatchParticipant GroupMatchParticipant[]
+}
+
+model GroupMatch {
+  id                    String                  @id @default(uuid())
+  groupId               String
+  group                 Group                   @relation(fields: [groupId], references: [id])
+  date                  DateTime
+  GroupMatchParticipant GroupMatchParticipant[]
+}
+
+model GroupMatchParticipant {
+  id            String      @id @default(uuid())
+  groupMatchId  String
+  groupMatch    GroupMatch  @relation(fields: [groupMatchId], references: [id])
+  groupMemberId String
+  groupMember   GroupMember @relation(fields: [groupMemberId], references: [id])
+  points        Int
+  totalScore    Int
+}
+
+model KnockoutStageMatch {
+  id                            String                          @id @default(uuid())
+  type                          KnockoutStageMatchType
+  date                          DateTime?
+  KnockoutStageMatchParticipant KnockoutStageMatchParticipant[]
+}
+
+model KnockoutStageMatchParticipant {
+  id             String             @id @default(uuid())
+  matchId        String
+  match          KnockoutStageMatch @relation(fields: [matchId], references: [id])
+  registrationId String
+  registration   Registration       @relation(fields: [registrationId], references: [id])
+  points         Int
+  totalScore     Int
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  VERIFICATION
+  PASSWORD_RESET
+}
+
+enum RegistrationAction {
+  CREATED
+  DELETED
+  ACCEPTED
+}
+
+enum KnockoutStageMatchType {
+  ROUND_OF_16
+  QUARTER_FINALS
+  SEMI_FINALS
+  FINAL
+}
