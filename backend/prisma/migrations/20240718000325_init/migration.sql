@@ -16,8 +16,9 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
-    "role" "Role" NOT NULL,
-    "confirmedAt" TIMESTAMP(3) NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
+    "confirmedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -166,6 +167,18 @@ CREATE TABLE "KnockoutStageMatchParticipant" (
 
     CONSTRAINT "KnockoutStageMatchParticipant_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Token_token_key" ON "Token"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Token_userId_type_key" ON "Token"("userId", "type");
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_mapId_fkey" FOREIGN KEY ("mapId") REFERENCES "Map"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -9,11 +9,12 @@ datasource db {
 
 model User {
   id             String           @id @default(uuid())
-  email          String
-  username       String
+  email          String           @unique
+  username       String           @unique
   fullName       String
-  role           Role
-  confirmedAt    DateTime
+  password       String
+  role           Role             @default(USER)
+  confirmedAt    DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt()
   eventOrganizer EventOrganizer[]
@@ -24,9 +25,11 @@ model Token {
   id        String    @id @default(uuid())
   userId    String
   type      TokenType
-  token     String
+  token     String    @unique
   createdAt DateTime  @default(now())
   expiresAt DateTime
+
+  @@unique([userId, type])
 }
 
 model Event {
