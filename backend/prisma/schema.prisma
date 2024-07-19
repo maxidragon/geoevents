@@ -37,6 +37,7 @@ model Event {
   name                    String
   startDate               DateTime
   endDate                 DateTime
+  address                 String
   autoAcceptRegistrations Boolean
   enableQualifications    Boolean
   enableGroups            Boolean

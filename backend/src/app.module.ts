@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { DbModule } from './db/db.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         },
       }),
     }),
+    EventModule,
   ],
   controllers: [AppController],
 })
