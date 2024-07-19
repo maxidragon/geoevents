@@ -161,6 +161,7 @@ export class AuthService {
         id: true,
         email: true,
         username: true,
+        role: true,
       },
     });
   }

@@ -59,6 +59,11 @@ export const getUserInfo = () => {
     return JSON.parse(userInfo);
 };
 
+export const isAdmin = () => {
+    const userInfo = getUserInfo();
+    return userInfo !== null && userInfo.role === "ADMIN";
+};
+
 export const forgotPassword = async (email: string) => {
     const response = await backendRequest("auth/password/forgot", "POST", false, {
       email: email,

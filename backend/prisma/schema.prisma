@@ -41,6 +41,8 @@ model Event {
   enableQualifications    Boolean
   enableGroups            Boolean
   enableKnockoutStage     Boolean
+  isPublic                Boolean
+  useExternalRegistration Boolean @default(false)
   mapId                   String
   map                     Map                  @relation(fields: [mapId], references: [id])
   organizers              EventOrganizer[]
@@ -63,6 +65,7 @@ model Registration {
   event                         Event                           @relation(fields: [eventId], references: [id])
   userId                        String
   user                          User                            @relation(fields: [userId], references: [id])
+  comment                      String?
   qualificationResults          QualificationResult[]
   registrationHistory           RegistrationHistory[]
   GroupMember                   GroupMember[]

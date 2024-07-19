@@ -6,6 +6,7 @@ services:
     container_name: geoevents-dev-backend
     ports: 
       - "5000:5000"
+      - "5555:5555"
     volumes:
       - ./backend/src:/app/src
     restart: unless-stopped
