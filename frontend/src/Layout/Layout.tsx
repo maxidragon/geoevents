@@ -1,11 +1,20 @@
-import Navbar from "./Navbar";
-import Copyright from "./Copyright";
-import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
+
+import Copyright from "./Copyright";
+import Navbar from "./Navbar";
 
 const Layout = () => {
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "background.paper", color: "white" }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh",
+                backgroundColor: "background.paper",
+                color: "white",
+            }}
+        >
             <Navbar />
             <Outlet />
             <Box sx={{ mt: "auto", mb: 2 }}>
