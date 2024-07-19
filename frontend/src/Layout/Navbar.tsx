@@ -2,7 +2,11 @@ import { AppBar, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import LoginPartial from "./LoginPartial";
 
-const Navbar = (props: { title?: string }) => {
+interface NavbarProps {
+  title?: string;
+}
+
+const Navbar = ({title }: NavbarProps) => {
   return (
     <AppBar position="static" color="primary" sx={{ width: "100%" }}>
       <Toolbar>
@@ -14,7 +18,7 @@ const Navbar = (props: { title?: string }) => {
           to={`/`}
           sx={{ textDecoration: "none" }}
         >
-          {props.title ? props.title : "GeoEvents"}
+          {title ? title : "GeoEvents"}
         </Typography>
         <LoginPartial />
       </Toolbar>

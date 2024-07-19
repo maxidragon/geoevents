@@ -32,7 +32,7 @@ export class AuthService {
     return !!user;
   }
 
-  async signup(dto: RegisterDto): Promise<object> {
+  async register(dto: RegisterDto): Promise<object> {
     if (await this.isTaken(dto.email, dto.username)) {
       throw new HttpException('Email or username already taken', 409);
     }
@@ -160,6 +160,7 @@ export class AuthService {
       select: {
         id: true,
         email: true,
+        username: true,
       },
     });
   }

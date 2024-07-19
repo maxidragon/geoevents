@@ -9,6 +9,6 @@ export class RegisterController {
   @HttpCode(HttpStatus.OK)
   @Post()
   async register(@Body() dto: RegisterDto): Promise<object> {
-    return this.authService.signup(dto);
+    return this.authService.register(dto);
   }
 }

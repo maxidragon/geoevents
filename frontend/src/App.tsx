@@ -9,6 +9,7 @@ import { createTheme } from '@mui/material';
 import Layout from './Layout/Layout';
 import Home from './Pages/Home/Home';
 import Login from './Pages/Auth/Login/Login';
+import Verify from './Pages/Auth/Verify/Verify';
 
   
 const darkTheme = createTheme({
@@ -43,6 +44,10 @@ const App = () => {
           path: "auth/password/reset/:resetId",
           element: <ResetPassword />,
         },
+        {
+          path: "auth/verify/:id",
+          element: <Verify />,
+        }
       ],
     },
   ]);

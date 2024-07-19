@@ -1,55 +1,27 @@
-import { useEffect, useState } from "react";
 import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
-import { getUserInfo, logout } from "../logic/auth";
-import PersonIcon from "@mui/icons-material/Person";
+import { getUserInfo, isUserLoggedIn } from "../logic/auth";
+import AccountMenu from "./AccountMenu";
+import { useEffect, useState } from "react";
+import { UserInfo } from "../logic/interfaces";
 
 const LoginPartial = () => {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-  const user = getUserInfo();
+  const [user, setUser] = useState<UserInfo>(getUserInfo());
+  const [loggedIn, setLoggedIn] = useState<boolean>(isUserLoggedIn());
+  
   useEffect(() => {
-    function handleResize() {
-      if (window.innerWidth <= 800) {
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
-    }
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const handleStorage = () => {
+      setUser(getUserInfo());
+      setLoggedIn(isUserLoggedIn());
     };
-  }, []);
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [])
 
   return (
     <>
-      {user && user.id ? (
-        <>
-          {isMobile ? null : <Typography>Hello {user.username}</Typography>}
-          <IconButton
-            color="inherit"
-            onClick={() => {
-              logout();
-              window.location.reload();
-            }}
-          >
-            <LogoutIcon fontSize="medium" />
-          </IconButton>
-          <IconButton
-            component={Link}
-            to={`/profile/${user.id}`}
-            rel="noopener noreferrer"
-          >
-            <PersonIcon sx={{ color: "#fff" }} fontSize="medium" />
-          </IconButton>
-        </>
-      ) : (
+      {loggedIn ? <AccountMenu user={user} /> : (
         <IconButton color="inherit" component={Link} to={"/auth/login"}>
           <LoginIcon fontSize="medium" />
         </IconButton>

@@ -32,6 +32,7 @@ export const login = async (email: string, password: string) => {
   if (response.status === 200 && data.token) {
     localStorage.setItem(TOKEN_NAME, data.token);
     localStorage.setItem(USER_INFO_NAME, JSON.stringify(data.userInfo));
+    window.dispatchEvent(new Event('storage'));
   }
   return response.status;
 };
@@ -43,6 +44,7 @@ export const getToken = () => {
 export const logout = () => {
     localStorage.removeItem(TOKEN_NAME);
     localStorage.removeItem(USER_INFO_NAME);
+    window.dispatchEvent(new Event('storage'))
 };
 
 export const isUserLoggedIn = () => {
@@ -83,4 +85,9 @@ export const changePassword = async (
   return response.status;
 };
   
-
+export const verifyEmail = async (id: string) => {
+  const response = await backendRequest(`auth/verify`, "POST", false, {
+    token: id,
+  });
+  return response.status;
+};

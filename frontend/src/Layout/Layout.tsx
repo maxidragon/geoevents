@@ -9,7 +9,7 @@ const Layout = () => {
             <Navbar />
             <Outlet />
             <Box sx={{ mt: "auto", mb: 2 }}>
-            <Copyright />
+                <Copyright />
             </Box>
         </Box>
     );

@@ -11,6 +11,8 @@ services:
     restart: unless-stopped
     environment:
       - DATABASE_URL=postgres://root:password@database:5432/geoevents
+    env_file:
+      - .env
     depends_on:
       database:
         condition: service_healthy
