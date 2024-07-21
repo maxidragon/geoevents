@@ -17,6 +17,57 @@ export class EventService {
     });
   }
 
+  async getMyEvents(userId: string) {
+    const whereParams = {
+      OR: [
+        {
+          organizers: {
+            some: {
+              userId,
+            },
+          },
+        },
+        {
+          registrations: {
+            some: {
+              userId,
+            },
+          },
+        },
+      ],
+    };
+    const upcomingEvents = await this.prisma.event.findMany({
+      where: {
+        AND: [
+          whereParams,
+          {
+            startDate: {
+              gte: new Date(),
+            },
+          },
+        ],
+      },
+    });
+
+    const pastEvents = await this.prisma.event.findMany({
+      where: {
+        AND: [
+          whereParams,
+          {
+            startDate: {
+              lt: new Date(),
+            },
+          },
+        ],
+      },
+    });
+
+    return {
+      upcomingEvents,
+      pastEvents,
+    };
+  }
+
   async createEvent(data: CreateEventDto) {
     const existingEvent = await this.prisma.event.findFirst({
       where: {

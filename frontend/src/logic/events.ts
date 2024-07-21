@@ -27,6 +27,11 @@ export const getUpcomingEvents = async () => {
     return await response.json();
 };
 
+export const getMyEvents = async () => {
+    const response = await backendRequest("event/my", "GET", true);
+    return await response.json();
+};
+
 export const createEvent = async (event: IEvent) => {
     const response = await backendRequest("event", "POST", true, event);
     const { data } = await response.json();
