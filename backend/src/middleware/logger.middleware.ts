@@ -14,7 +14,7 @@ export class LoggerMiddleware implements NestMiddleware {
         req.headers.authorization.split(' ')[1],
       );
       this.logger.log(
-        `Logging HTTP request ${req.method} ${req.baseUrl} ${res.statusCode} from user ${user.userId}`,
+        `Logging HTTP request ${req.method} ${req.baseUrl} ${res.statusCode} from user ${user.userId} body: ${JSON.stringify(req.body)}`,
       );
     } else {
       const baseUrl = req.baseUrl;

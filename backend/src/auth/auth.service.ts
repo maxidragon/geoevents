@@ -109,6 +109,7 @@ export class AuthService {
     }
     const jwt = await this.generateAuthJwt({
       userId: user.id,
+      role: user.role,
     });
 
     return {

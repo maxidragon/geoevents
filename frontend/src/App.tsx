@@ -1,5 +1,7 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { ConfirmProvider } from "material-ui-confirm";
 import { SnackbarProvider } from "notistack";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -10,6 +12,7 @@ import Login from "./Pages/Auth/Login/Login";
 import Register from "./Pages/Auth/Register/Register";
 import ResetPassword from "./Pages/Auth/ResetPassword/ResetPassword";
 import Verify from "./Pages/Auth/Verify/Verify";
+import NewEvent from "./Pages/Event/NewEvent/NewEvent";
 import Home from "./Pages/Home/Home";
 
 const darkTheme = createTheme({
@@ -48,17 +51,23 @@ const App = () => {
                     path: "auth/verify/:id",
                     element: <Verify />,
                 },
+                {
+                    path: "events/new",
+                    element: <NewEvent />,
+                },
             ],
         },
     ]);
 
     return (
         <ThemeProvider theme={darkTheme}>
-            <SnackbarProvider>
-                <ConfirmProvider>
-                    <RouterProvider router={router} />
-                </ConfirmProvider>
-            </SnackbarProvider>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+                <SnackbarProvider>
+                    <ConfirmProvider>
+                        <RouterProvider router={router} />
+                    </ConfirmProvider>
+                </SnackbarProvider>
+            </LocalizationProvider>
         </ThemeProvider>
     );
 };

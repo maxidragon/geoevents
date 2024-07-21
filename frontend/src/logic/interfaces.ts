@@ -18,19 +18,13 @@ export interface IEvent {
     enableKnockoutStage: boolean;
     isPublic: boolean;
     useExternalRegistration: boolean;
-    mapId: string;
+    mapId?: string;
     map: Map;
-    organizers: EventOrganizer[];
+    organizers: UserInfo[];
 }
 
 export interface Map {
     id: string;
     name: string;
-    image: string;
-}
-
-export interface EventOrganizer {
-    id: string;
-    event: Event;
-    user: UserInfo;
+    url: string;
 }

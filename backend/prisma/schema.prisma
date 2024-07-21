@@ -38,14 +38,15 @@ model Event {
   startDate               DateTime
   endDate                 DateTime
   address                 String
+  description             String?
   autoAcceptRegistrations Boolean
   enableQualifications    Boolean
   enableGroups            Boolean
   enableKnockoutStage     Boolean
   isPublic                Boolean
   useExternalRegistration Boolean @default(false)
-  mapId                   String
-  map                     Map                  @relation(fields: [mapId], references: [id])
+  mapId                   String?
+  map                     Map?                  @relation(fields: [mapId], references: [id])
   organizers              EventOrganizer[]
   qualificationRounds     QualificationRound[]
   registrations           Registration[]

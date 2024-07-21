@@ -1,4 +1,4 @@
-import { List, ListItemButton, ListItemText } from "@mui/material";
+import { List, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import { IEvent } from "../../../logic/interfaces";
@@ -9,6 +9,10 @@ interface EventListProps {
 }
 
 const EventList = ({ events }: EventListProps) => {
+    if (events.length === 0) {
+        return <Typography sx={{ textAlign: "center" }}>No events</Typography>;
+    }
+
     return (
         <List dense={true} disablePadding>
             {events.map((event) => (
