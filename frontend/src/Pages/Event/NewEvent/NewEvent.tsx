@@ -23,6 +23,7 @@ const NewEvent = () => {
             enqueueSnackbar("Failed to create event", { variant: "error" });
         }
     };
+
     return (
         <Box
             sx={{

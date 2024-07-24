@@ -1,15 +1,15 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Loading from "@/Components/Loading";
 import { getEventById, hasPermissionToManage } from "@/logic/events";
 import { IEvent } from "@/logic/interfaces";
 
-import EventTabs from "./Components/EventTabs";
+import ManageEventTabs from "./Components/ManageEventTabs";
 
-const EventPage = () => {
+const ManageEvent = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [eventData, setEventData] = useState<IEvent | null>(null);
@@ -21,7 +21,15 @@ const EventPage = () => {
         }
         const response = await getEventById(id);
         if (response.status === 200) {
-            setEventData(response.data);
+            if (hasPermissionToManage(response.data)) {
+                setEventData(response.data);
+            } else {
+                navigate(`/events/${id}`);
+                enqueueSnackbar(
+                    "You don't have permission to manage this event",
+                    { variant: "error" }
+                );
+            }
         } else if (response.status === 404) {
             navigate("/");
             enqueueSnackbar("Event not found", { variant: "error" });
@@ -46,33 +54,12 @@ const EventPage = () => {
                 p: 2,
             }}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: {
-                        xs: "column",
-                        md: "row",
-                    },
-                    justifyContent: "space-between",
-                }}
-            >
-                <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
-                    {eventData.name}
-                </Typography>
-                {hasPermissionToManage(eventData) && (
-                    <Button
-                        component={Link}
-                        to={`/events/${id}/manage`}
-                        variant="contained"
-                        sx={{ width: "fit-content", height: "fit-content" }}
-                    >
-                        Manage
-                    </Button>
-                )}
-            </Box>
-            <EventTabs eventData={eventData} />
+            <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
+                {eventData.name}
+            </Typography>
+            <ManageEventTabs eventData={eventData} />
         </Box>
     );
 };
 
-export default EventPage;
+export default ManageEvent;

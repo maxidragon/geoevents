@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
-import { CreateEventDto } from './dto/createEvent.dto';
+import { EventDto } from './dto/event.dto';
 
 @Injectable()
 export class EventService {
@@ -69,13 +69,6 @@ export class EventService {
   }
 
   async getEventById(id: string, userId: string) {
-    const isAdmin = await this.prisma.user.findFirst({
-      where: {
-        id: userId,
-        role: 'ADMIN',
-      },
-    });
-
     const event = await this.prisma.event.findFirst({
       where: {
         id,
@@ -120,9 +113,7 @@ export class EventService {
     });
     if (
       event &&
-      (event.isPublic ||
-        isAdmin ||
-        event.organizers.some((organizer) => organizer.user.id === id))
+      (event.isPublic || (await this.hasPermissionToManage(event.id, userId)))
     ) {
       return {
         ...event,
@@ -132,7 +123,7 @@ export class EventService {
     throw new HttpException('Event not found', 404);
   }
 
-  async createEvent(data: CreateEventDto) {
+  async createEvent(data: EventDto) {
     const existingEvent = await this.prisma.event.findFirst({
       where: {
         id: data.id,
@@ -166,5 +157,77 @@ export class EventService {
       message: 'Event created successfully',
       data: event,
     };
+  }
+
+  async updateEvent(id: string, data: EventDto, userId: string) {
+    const event = await this.prisma.event.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!event) {
+      throw new HttpException('Event not found', 404);
+    }
+
+    if (!this.hasPermissionToManage(id, userId)) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+
+    await this.prisma.event.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        address: data.address,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        isPublic: data.isPublic,
+        useExternalRegistration: data.useExternalRegistration,
+        autoAcceptRegistrations: data.autoAcceptRegistrations,
+        enableQualifications: data.enableQualifications,
+        enableGroups: data.enableGroups,
+        enableKnockoutStage: data.enableKnockoutStage,
+      },
+    });
+
+    await this.prisma.eventOrganizer.deleteMany({
+      where: {
+        eventId: id,
+      },
+    });
+
+    await this.prisma.eventOrganizer.createMany({
+      data: data.organizers.map((organizer) => ({
+        userId: organizer.id,
+        eventId: id,
+      })),
+    });
+
+    return {
+      message: 'Event updated successfully',
+    };
+  }
+
+  async hasPermissionToManage(eventId: string, userId: string) {
+    if (!userId) return false;
+    const isOrganizer = await this.prisma.eventOrganizer.findFirst({
+      where: {
+        eventId,
+        userId,
+      },
+    });
+    const isAdmin = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        role: 'ADMIN',
+      },
+    });
+
+    return isOrganizer || isAdmin;
   }
 }

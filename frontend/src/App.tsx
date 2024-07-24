@@ -13,6 +13,7 @@ import Register from "./Pages/Auth/Register/Register";
 import ResetPassword from "./Pages/Auth/ResetPassword/ResetPassword";
 import Verify from "./Pages/Auth/Verify/Verify";
 import EventPage from "./Pages/Event/EventPage/EventPage";
+import ManageEvent from "./Pages/Event/ManageEvent/ManageEvent";
 import MyEvents from "./Pages/Event/MyEvents/MyEvents";
 import NewEvent from "./Pages/Event/NewEvent/NewEvent";
 import Home from "./Pages/Home/Home";
@@ -64,6 +65,10 @@ const App = () => {
                 {
                     path: "events/:id",
                     element: <EventPage />,
+                },
+                {
+                    path: "events/:id/manage",
+                    element: <ManageEvent />,
                 },
             ],
         },

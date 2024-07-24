@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateEventDto {
+export class EventDto {
   @IsString()
   @IsOptional()
   id: string;

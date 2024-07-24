@@ -5,13 +5,13 @@ import TabPanel from "@/Components/Tabs/TabPanel";
 import { IEvent } from "@/logic/interfaces";
 import { a11yTabsProps } from "@/logic/utils";
 
-import BasicInformation from "./Tabs/BasicInformation";
+import EditEvent from "./Tabs/EditEvent";
 
-interface EventTabsProps {
+interface ManagaEventTabsProps {
     eventData: IEvent;
 }
 
-const EventTabs = ({ eventData }: EventTabsProps) => {
+const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
     const [value, setValue] = useState(0);
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -22,11 +22,8 @@ const EventTabs = ({ eventData }: EventTabsProps) => {
         <>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs value={value} onChange={handleChange}>
-                    <Tab label="Basic information" {...a11yTabsProps(0)} />
-                    <Tab label="How it works?" {...a11yTabsProps(1)} />
-                    {!eventData.useExternalRegistration && (
-                        <Tab label="Register" {...a11yTabsProps(2)} />
-                    )}
+                    <Tab label="Edit" {...a11yTabsProps(0)} />
+                    <Tab label="Manage registrations" {...a11yTabsProps(1)} />
                     {eventData.enableQualifications && (
                         <Tab
                             label="Qualifications results"
@@ -51,10 +48,10 @@ const EventTabs = ({ eventData }: EventTabsProps) => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <BasicInformation eventData={eventData} />
+                <EditEvent eventData={eventData} />
             </TabPanel>
         </>
     );
 };
 
-export default EventTabs;
+export default ManageEventTabs;

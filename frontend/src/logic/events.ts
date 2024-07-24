@@ -1,3 +1,4 @@
+import { getUserInfo, isAdmin } from "./auth";
 import { IEvent } from "./interfaces";
 import { backendRequest } from "./request";
 
@@ -47,4 +48,15 @@ export const getEventById = async (id: string) => {
         data: await response.json(),
         status: response.status,
     };
+};
+
+export const updateEvent = async (id: string, event: IEvent) => {
+    const response = await backendRequest(`event/${id}`, "PUT", true, event);
+    return response.status;
+};
+
+export const hasPermissionToManage = (event: IEvent) => {
+    const userInfo = getUserInfo();
+    if (!userInfo) return false;
+    return event.organizers.some((o) => o.id === userInfo.id) || isAdmin();
 };
