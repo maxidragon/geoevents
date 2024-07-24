@@ -68,6 +68,70 @@ export class EventService {
     };
   }
 
+  async getEventById(id: string, userId: string) {
+    const isAdmin = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        role: 'ADMIN',
+      },
+    });
+
+    const event = await this.prisma.event.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        address: true,
+        startDate: true,
+        endDate: true,
+        isPublic: true,
+        useExternalRegistration: true,
+        autoAcceptRegistrations: true,
+        enableQualifications: true,
+        enableGroups: true,
+        enableKnockoutStage: true,
+        map: true,
+        organizers: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                fullName: true,
+              },
+            },
+          },
+        },
+        registrations: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                id: true,
+                username: true,
+                fullName: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (
+      event &&
+      (event.isPublic ||
+        isAdmin ||
+        event.organizers.some((organizer) => organizer.user.id === id))
+    ) {
+      return {
+        ...event,
+        organizers: event.organizers.map((organizer) => organizer.user),
+      };
+    }
+    throw new HttpException('Event not found', 404);
+  }
+
   async createEvent(data: CreateEventDto) {
     const existingEvent = await this.prisma.event.findFirst({
       where: {

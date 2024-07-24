@@ -40,3 +40,11 @@ export const createEvent = async (event: IEvent) => {
         status: response.status,
     };
 };
+
+export const getEventById = async (id: string) => {
+    const response = await backendRequest(`event/${id}`, "GET", true);
+    return {
+        data: await response.json(),
+        status: response.status,
+    };
+};

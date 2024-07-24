@@ -4,3 +4,10 @@ export const formatDateRange = (startDate: Date, endDate: Date) => {
     }
     return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
 };
+
+export const a11yTabsProps = (index: number) => {
+    return {
+        id: `tab-${index}`,
+        "aria-controls": `tabpanel-${index}`,
+    };
+};

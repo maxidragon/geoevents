@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { EventService } from './event.service';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { CreateEventDto } from './dto/createEvent.dto';
@@ -25,5 +25,11 @@ export class EventController {
   @Get('my')
   async getEventsOrganizedByMe(@GetUser() user: JwtAuthDto) {
     return await this.eventService.getMyEvents(user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id')
+  async getEventById(@GetUser() user: JwtAuthDto, @Param('id') id: string) {
+    return await this.eventService.getEventById(id, user.userId);
   }
 }
