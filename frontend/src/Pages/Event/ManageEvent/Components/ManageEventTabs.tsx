@@ -1,5 +1,6 @@
 import { Box, Tab, Tabs } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import TabPanel from "@/Components/Tabs/TabPanel";
 import { IEvent } from "@/logic/interfaces";
@@ -7,16 +8,37 @@ import { a11yTabsProps } from "@/logic/utils";
 
 import EditEvent from "./Tabs/EditEvent";
 
+const tabs = {
+    edit: 0,
+    manageRegistrations: 1,
+    qualificationsResults: 3,
+    groups: 4,
+    groupStageResults: 5,
+    knockoutStageResults: 6,
+};
+
 interface ManagaEventTabsProps {
     eventData: IEvent;
 }
 
 const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
     const [value, setValue] = useState(0);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
+        const name = Object.keys(tabs).find(
+            (key) => tabs[key as keyof typeof tabs] === newValue
+        );
+        setSearchParams({ tab: name || "" });
     };
+
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab) {
+            setValue(tabs[tab as keyof typeof tabs]);
+        }
+    }, [searchParams]);
 
     return (
         <>
@@ -29,12 +51,11 @@ const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
                 >
                     <Tab label="Edit" {...a11yTabsProps(0)} />
                     <Tab label="Manage registrations" {...a11yTabsProps(1)} />
-                    {eventData.enableQualifications && (
-                        <Tab
-                            label="Qualifications results"
-                            {...a11yTabsProps(3)}
-                        />
-                    )}
+                    <Tab
+                        label="Qualifications results"
+                        {...a11yTabsProps(3)}
+                        sx={{}}
+                    />
                     {eventData.enableGroups && (
                         <Tab label="Groups" {...a11yTabsProps(4)} />
                     )}

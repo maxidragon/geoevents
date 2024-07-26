@@ -41,12 +41,7 @@ export interface RegistrationHistory {
     user: UserInfo;
 }
 
-//eslint-disable-next-line
-enum RegistrationAction {
-    CREATED = "CREATED",
-    DELETED = "DELETED",
-    ACCEPTED = "ACCEPTED",
-}
+export type RegistrationAction = "CREATED" | "DELETED" | "ACCEPTED";
 
 export interface Map {
     id: string;
