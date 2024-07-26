@@ -57,7 +57,7 @@ const ManageEvent = () => {
             <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
                 {eventData.name}
             </Typography>
-            <ManageEventTabs eventData={eventData} />
+            <ManageEventTabs eventData={eventData} fetchData={fetchData} />
         </Box>
     );
 };

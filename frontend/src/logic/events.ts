@@ -23,6 +23,7 @@ export const defaultEvent: IEvent = {
         url: "",
     },
     organizers: [],
+    registrations: [],
 };
 
 export const defaultRegistration: Registration = {
@@ -31,6 +32,14 @@ export const defaultRegistration: Registration = {
     userId: "",
     comment: "",
     registrationHistory: [],
+    status: "PENDING",
+    user: {
+        id: "",
+        email: "",
+        role: "",
+        username: "",
+        fullName: "",
+    },
 };
 
 export const getUpcomingEvents = async () => {
@@ -118,4 +127,40 @@ export const updateRegistration = async (
 
 export const isRegisteredCheck = (registration: Registration) => {
     return registration.id !== defaultRegistration.id;
+};
+
+export const acceptRegistration = async (
+    eventId: string,
+    registrationId: string
+) => {
+    const response = await backendRequest(
+        `event/${eventId}/registration/${registrationId}/accept`,
+        "POST",
+        true
+    );
+    return response.status;
+};
+
+export const deleteRegistration = async (
+    eventId: string,
+    registrationId: string
+) => {
+    const response = await backendRequest(
+        `event/${eventId}/registration/${registrationId}`,
+        "DELETE",
+        true
+    );
+    return response.status;
+};
+
+export const moveRegistrationToPending = async (
+    eventId: string,
+    registrationId: string
+) => {
+    const response = await backendRequest(
+        `event/${eventId}/registration/${registrationId}/pending`,
+        "POST",
+        true
+    );
+    return response.status;
 };

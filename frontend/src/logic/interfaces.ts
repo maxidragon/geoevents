@@ -31,16 +31,19 @@ export interface Registration {
     eventId: string;
     userId: string;
     user: UserInfo;
+    status: RegistrationStatus;
     comment?: string;
     registrationHistory: RegistrationHistory[];
 }
+
+export type RegistrationStatus = "PENDING" | "ACCEPTED" | "DELETED";
 
 export interface RegistrationHistory {
     id: string;
     registrationId: string;
     action: RegistrationAction;
     timestamp: Date;
-    user: UserInfo;
+    performedBy: UserInfo;
 }
 
 export type RegistrationAction = "CREATED" | "DELETED" | "ACCEPTED";

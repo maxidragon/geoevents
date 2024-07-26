@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -67,6 +68,51 @@ export class EventController {
     @Body() data: RegisterDto,
   ) {
     return await this.eventService.updateRegistration(id, user.userId, data);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id/registration/:registrationId')
+  async deleteRegistrationForEvent(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+  ) {
+    return await this.eventService.deleteRegistration(
+      id,
+      registrationId,
+      user.userId,
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':id/registration/:registrationId/accept')
+  async acceptRegistrationForEvent(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+  ) {
+    return await this.eventService.acceptRegistration(
+      id,
+      registrationId,
+      user.userId,
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':id/registration/:registrationId/pending')
+  async moveRegistrationToPending(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Param('registrationId') registrationId: string,
+  ) {
+    return await this.eventService.moveRegistrationToPending(
+      id,
+      registrationId,
+      user.userId,
+    );
   }
 
   @UseGuards(OptionalJwtAuthGuard)

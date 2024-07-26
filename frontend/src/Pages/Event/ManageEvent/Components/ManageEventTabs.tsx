@@ -7,6 +7,7 @@ import { IEvent } from "@/logic/interfaces";
 import { a11yTabsProps } from "@/logic/utils";
 
 import EditEvent from "./Tabs/EditEvent";
+import ManageRegistrations from "./Tabs/ManageRegistrations";
 
 const tabs = {
     edit: 0,
@@ -19,9 +20,10 @@ const tabs = {
 
 interface ManagaEventTabsProps {
     eventData: IEvent;
+    fetchData: () => void;
 }
 
-const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
+const ManageEventTabs = ({ eventData, fetchData }: ManagaEventTabsProps) => {
     const [value, setValue] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -75,6 +77,12 @@ const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
             </Box>
             <TabPanel value={value} index={0}>
                 <EditEvent eventData={eventData} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <ManageRegistrations
+                    eventData={eventData}
+                    fetchData={fetchData}
+                />
             </TabPanel>
         </>
     );

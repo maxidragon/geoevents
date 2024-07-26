@@ -75,6 +75,20 @@ export class EventService {
     const registrationsWhereParams = hasPermission
       ? {}
       : { status: RegistrationStatus.ACCEPTED };
+    const registrationHistorySelect = {
+      select: {
+        id: true,
+        action: true,
+        timestamp: true,
+        performedBy: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+          },
+        },
+      },
+    };
     const event = await this.prisma.event.findFirst({
       where: {
         id,
@@ -108,6 +122,7 @@ export class EventService {
         registrations: {
           select: {
             id: true,
+            eventId: true,
             user: {
               select: {
                 id: true,
@@ -115,6 +130,10 @@ export class EventService {
                 fullName: true,
               },
             },
+            status: true,
+            registrationHistory: hasPermission
+              ? registrationHistorySelect
+              : false,
           },
           where: registrationsWhereParams,
         },
@@ -348,5 +367,137 @@ export class EventService {
     return {
       message: 'Registration updated successfully',
     };
+  }
+
+  async acceptRegistration(
+    eventId: string,
+    registrationId: string,
+    userId: string,
+  ) {
+    const hasPermission = await this.hasPermissionToManage(eventId, userId);
+
+    if (!hasPermission) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+
+    const registration = await this.prisma.registration.findUnique({
+      where: {
+        id: registrationId,
+      },
+    });
+
+    if (!registration) {
+      throw new HttpException('Registration not found', 404);
+    }
+
+    await this.prisma.registration.update({
+      where: {
+        id: registrationId,
+      },
+      data: {
+        status: RegistrationStatus.ACCEPTED,
+        registrationHistory: {
+          create: {
+            action: RegistrationAction.ACCEPTED,
+            performedBy: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async deleteRegistration(
+    eventId: string,
+    registrationId: string,
+    userId: string,
+  ) {
+    const hasPermission = await this.hasPermissionToManage(eventId, userId);
+
+    if (!hasPermission) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+
+    const registration = await this.prisma.registration.findUnique({
+      where: {
+        id: registrationId,
+      },
+    });
+
+    if (!registration || registration.status === RegistrationStatus.DELETED) {
+      throw new HttpException('Registration not found', 404);
+    }
+
+    return await this.prisma.registration.update({
+      where: {
+        id: registrationId,
+      },
+      data: {
+        status: RegistrationStatus.DELETED,
+        registrationHistory: {
+          create: {
+            action: RegistrationAction.DELETED,
+            performedBy: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async moveRegistrationToPending(
+    eventId: string,
+    registrationId: string,
+    userId: string,
+  ) {
+    const hasPermission = await this.hasPermissionToManage(eventId, userId);
+
+    if (!hasPermission) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+
+    const registration = await this.prisma.registration.findUnique({
+      where: {
+        id: registrationId,
+      },
+    });
+
+    if (!registration) {
+      throw new HttpException('Registration not found', 404);
+    }
+
+    return await this.prisma.registration.update({
+      where: {
+        id: registrationId,
+      },
+      data: {
+        status: RegistrationStatus.PENDING,
+        registrationHistory: {
+          create: {
+            action: RegistrationAction.CREATED,
+            performedBy: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 }
