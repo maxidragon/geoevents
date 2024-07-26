@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -14,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorator/getUser.decorator';
 import { JwtAuthDto } from 'src/auth/dto/jwt-auth.dto';
 import { OptionalJwtAuthGuard } from 'src/auth/guards/optionalJwt.guard';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('event')
 export class EventController {
@@ -34,6 +37,36 @@ export class EventController {
   @Get('my')
   async getEventsOrganizedByMe(@GetUser() user: JwtAuthDto) {
     return await this.eventService.getMyEvents(user.userId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':id/register')
+  async registerForEvent(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Body() data: RegisterDto,
+  ) {
+    return await this.eventService.registerForEvent(id, user.userId, data);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id/registration')
+  async getRegistrationForEvent(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+  ) {
+    return await this.eventService.getRegistration(id, user.userId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put(':id/registration')
+  async updateRegistrationForEvent(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Body() data: RegisterDto,
+  ) {
+    return await this.eventService.updateRegistration(id, user.userId, data);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

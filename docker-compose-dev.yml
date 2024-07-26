@@ -9,6 +9,7 @@ services:
       - "5555:5555"
     volumes:
       - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
     restart: unless-stopped
     environment:
       - DATABASE_URL=postgres://root:password@database:5432/geoevents
@@ -28,6 +29,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: geoevents-dev-frontend
+    env_file:
+      - .env
     volumes:
       - ./frontend/src:/app/src
     ports:

@@ -21,7 +21,12 @@ const ManageEventTabs = ({ eventData }: ManagaEventTabsProps) => {
     return (
         <>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs value={value} onChange={handleChange}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                >
                     <Tab label="Edit" {...a11yTabsProps(0)} />
                     <Tab label="Manage registrations" {...a11yTabsProps(1)} />
                     {eventData.enableQualifications && (

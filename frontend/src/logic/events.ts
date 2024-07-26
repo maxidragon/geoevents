@@ -1,12 +1,14 @@
 import { getUserInfo, isAdmin } from "./auth";
-import { IEvent } from "./interfaces";
+import { IEvent, Registration } from "./interfaces";
 import { backendRequest } from "./request";
 
 export const defaultEvent: IEvent = {
     id: "",
     name: "",
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
+    startDate: new Date(),
+    endDate: new Date(),
+    registrationOpen: new Date(),
+    registrationClose: new Date(),
     address: "",
     isPublic: false,
     useExternalRegistration: false,
@@ -21,6 +23,14 @@ export const defaultEvent: IEvent = {
         url: "",
     },
     organizers: [],
+};
+
+export const defaultRegistration: Registration = {
+    id: "",
+    eventId: "",
+    userId: "",
+    comment: "",
+    registrationHistory: [],
 };
 
 export const getUpcomingEvents = async () => {
@@ -59,4 +69,53 @@ export const hasPermissionToManage = (event: IEvent) => {
     const userInfo = getUserInfo();
     if (!userInfo) return false;
     return event.organizers.some((o) => o.id === userInfo.id) || isAdmin();
+};
+
+export const isRegistrationOpen = (event: IEvent) => {
+    const now = new Date();
+    return (
+        new Date(event.registrationOpen).getTime() < now.getTime() &&
+        new Date(event.registrationClose).getTime() > now.getTime()
+    );
+};
+
+export const registerForEvent = async (id: string, comment?: string) => {
+    const response = await backendRequest(
+        `event/${id}/register`,
+        "POST",
+        true,
+        {
+            comment,
+        }
+    );
+    return response.status;
+};
+
+export const getRegistration = async (eventId: string) => {
+    const response = await backendRequest(
+        `event/${eventId}/registration`,
+        "GET",
+        true
+    );
+    return {
+        data: await response.json(),
+        status: response.status,
+    };
+};
+
+export const updateRegistration = async (
+    eventId: string,
+    data: Registration
+) => {
+    const response = await backendRequest(
+        `event/${eventId}/registration`,
+        "PUT",
+        true,
+        data
+    );
+    return response.status;
+};
+
+export const isRegisteredCheck = (registration: Registration) => {
+    return registration.id !== defaultRegistration.id;
 };

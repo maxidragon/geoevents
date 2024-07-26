@@ -9,8 +9,10 @@ export interface UserInfo {
 export interface IEvent {
     id: string;
     name: string;
-    startDate: string;
-    endDate: string;
+    startDate: Date;
+    endDate: Date;
+    registrationOpen: Date;
+    registrationClose: Date;
     address: string;
     autoAcceptRegistrations: boolean;
     enableQualifications: boolean;
@@ -21,6 +23,29 @@ export interface IEvent {
     mapId?: string;
     map: Map;
     organizers: UserInfo[];
+}
+
+export interface Registration {
+    id: string;
+    eventId: string;
+    userId: string;
+    comment?: string;
+    registrationHistory: RegistrationHistory[];
+}
+
+export interface RegistrationHistory {
+    id: string;
+    registrationId: string;
+    action: RegistrationAction;
+    timestamp: Date;
+    user: UserInfo;
+}
+
+//eslint-disable-next-line
+enum RegistrationAction {
+    CREATED = "CREATED",
+    DELETED = "DELETED",
+    ACCEPTED = "ACCEPTED",
 }
 
 export interface Map {

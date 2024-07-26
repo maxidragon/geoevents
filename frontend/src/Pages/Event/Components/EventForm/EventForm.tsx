@@ -8,7 +8,7 @@ import {
     FormHelperText,
     TextField,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DateTimePicker } from "@mui/x-date-pickers";
 import moment, { Moment } from "moment";
 import { useState } from "react";
 
@@ -33,6 +33,7 @@ const EventForm = ({ eventData, onSubmit }: EventFormProps) => {
     };
 
     const handleDateChange = (date: Moment | null, name: string) => {
+        date?.seconds(0).milliseconds(0);
         setEditedEvent({
             ...editedEvent,
             [name]: date?.toISOString() || "",
@@ -92,6 +93,18 @@ const EventForm = ({ eventData, onSubmit }: EventFormProps) => {
                 name="endDate"
                 value={moment(editedEvent.endDate)}
                 onChange={(date) => handleDateChange(date, "endDate")}
+            />
+            <DateTimePicker
+                label="Registration open"
+                name="registrationOpen"
+                value={moment(editedEvent.registrationOpen)}
+                onChange={(date) => handleDateChange(date, "registrationOpen")}
+            />
+            <DateTimePicker
+                label="Registration close"
+                name="registrationClose"
+                value={moment(editedEvent.registrationClose)}
+                onChange={(date) => handleDateChange(date, "registrationClose")}
             />
             <FormControl>
                 <TextField

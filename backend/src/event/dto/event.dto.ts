@@ -26,6 +26,12 @@ export class EventDto {
   @IsDate()
   endDate: Date;
 
+  @IsDate()
+  registrationOpen: Date;
+
+  @IsDate()
+  registrationClose: Date;
+
   @IsBoolean()
   isPublic: boolean;
 

@@ -17,6 +17,15 @@ const BasicInformation = ({ eventData }: BasicInformationProps) => {
                     new Date(eventData.endDate)
                 )}
             </Typography>
+            {eventData.registrationOpen && eventData.registrationClose && (
+                <Typography variant="body1">
+                    Registration:{" "}
+                    {formatDateRange(
+                        new Date(eventData.registrationOpen),
+                        new Date(eventData.registrationClose)
+                    )}
+                </Typography>
+            )}
             <Typography variant="body1">
                 Location: {eventData.address}
             </Typography>

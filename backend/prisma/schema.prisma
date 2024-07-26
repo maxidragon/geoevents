@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  email          String           @unique
-  username       String           @unique
-  fullName       String
-  password       String
-  role           Role             @default(USER)
-  confirmedAt    DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt()
-  eventOrganizer EventOrganizer[]
-  registrations  Registration[]
+  id                  String                @id @default(uuid())
+  email               String                @unique
+  username            String                @unique
+  fullName            String
+  password            String
+  role                Role                  @default(USER)
+  confirmedAt         DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt()
+  eventOrganizer      EventOrganizer[]
+  registrations       Registration[]
+  RegistrationHistory RegistrationHistory[]
 }
 
 model Token {
@@ -37,6 +38,8 @@ model Event {
   name                    String
   startDate               DateTime
   endDate                 DateTime
+  registrationOpen        DateTime?
+  registrationClose       DateTime?
   address                 String
   description             String?
   autoAcceptRegistrations Boolean
@@ -44,9 +47,9 @@ model Event {
   enableGroups            Boolean
   enableKnockoutStage     Boolean
   isPublic                Boolean
-  useExternalRegistration Boolean @default(false)
+  useExternalRegistration Boolean              @default(false)
   mapId                   String?
-  map                     Map?                  @relation(fields: [mapId], references: [id])
+  map                     Map?                 @relation(fields: [mapId], references: [id])
   organizers              EventOrganizer[]
   qualificationRounds     QualificationRound[]
   registrations           Registration[]
@@ -67,19 +70,22 @@ model Registration {
   event                         Event                           @relation(fields: [eventId], references: [id])
   userId                        String
   user                          User                            @relation(fields: [userId], references: [id])
-  comment                      String?
+  comment                       String?
   qualificationResults          QualificationResult[]
   registrationHistory           RegistrationHistory[]
   GroupMember                   GroupMember[]
   KnockoutStageMatchParticipant KnockoutStageMatchParticipant[]
+
+  @@unique([eventId, userId])
 }
 
 model RegistrationHistory {
   id             String             @id @default(uuid())
   registrationId String
-  registration   Registration       @relation(fields: [registrationId], references: [id])
+  registration   Registration       @relation(fields: [registrationId], references: [id], onDelete: Cascade)
   action         RegistrationAction
-  performedBy    String
+  performedById  String
+  performedBy    User               @relation(fields: [performedById], references: [id])
   timestamp      DateTime           @default(now())
 }
 
