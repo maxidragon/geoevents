@@ -71,6 +71,7 @@ model Registration {
   userId                        String
   user                          User                            @relation(fields: [userId], references: [id])
   comment                       String?
+  status                        RegistrationStatus              @default(PENDING)
   qualificationResults          QualificationResult[]
   registrationHistory           RegistrationHistory[]
   GroupMember                   GroupMember[]
@@ -181,6 +182,12 @@ enum RegistrationAction {
   CREATED
   DELETED
   ACCEPTED
+}
+
+enum RegistrationStatus {
+  PENDING
+  ACCEPTED
+  DELETED
 }
 
 enum KnockoutStageMatchType {

@@ -23,12 +23,14 @@ export interface IEvent {
     mapId?: string;
     map: Map;
     organizers: UserInfo[];
+    registrations: Registration[];
 }
 
 export interface Registration {
     id: string;
     eventId: string;
     userId: string;
+    user: UserInfo;
     comment?: string;
     registrationHistory: RegistrationHistory[];
 }

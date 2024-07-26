@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { EventDto } from './dto/event.dto';
-import { RegistrationAction } from '@prisma/client';
+import { RegistrationAction, RegistrationStatus } from '@prisma/client';
 import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
@@ -71,6 +71,10 @@ export class EventService {
   }
 
   async getEventById(id: string, userId: string) {
+    const hasPermission = await this.hasPermissionToManage(id, userId);
+    const registrationsWhereParams = hasPermission
+      ? {}
+      : { status: RegistrationStatus.ACCEPTED };
     const event = await this.prisma.event.findFirst({
       where: {
         id,
@@ -112,6 +116,7 @@ export class EventService {
               },
             },
           },
+          where: registrationsWhereParams,
         },
       },
     });
@@ -259,6 +264,7 @@ export class EventService {
         eventId,
         userId,
         comment: data.comment,
+        status: RegistrationStatus.PENDING,
         registrationHistory: {
           create: {
             action: RegistrationAction.CREATED,
@@ -274,17 +280,20 @@ export class EventService {
 
     if (event.autoAcceptRegistrations) {
     } else {
-      await this.prisma.registrationHistory.create({
+      await this.prisma.registration.update({
+        where: {
+          id: registration.id,
+        },
         data: {
-          registration: {
-            connect: {
-              id: registration.id,
-            },
-          },
-          action: RegistrationAction.ACCEPTED,
-          performedBy: {
-            connect: {
-              id: userId,
+          status: RegistrationStatus.ACCEPTED,
+          registrationHistory: {
+            create: {
+              action: RegistrationAction.ACCEPTED,
+              performedBy: {
+                connect: {
+                  id: userId,
+                },
+              },
             },
           },
         },

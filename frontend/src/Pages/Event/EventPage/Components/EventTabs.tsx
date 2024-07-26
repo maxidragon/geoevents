@@ -8,6 +8,7 @@ import { IEvent } from "@/logic/interfaces";
 import { a11yTabsProps } from "@/logic/utils";
 
 import BasicInformation from "./Tabs/BasicInformation";
+import Participants from "./Tabs/Participants";
 import Register from "./Tabs/Register";
 
 interface EventTabsProps {
@@ -109,7 +110,7 @@ const EventTabs = ({ eventData }: EventTabsProps) => {
                 <Register eventData={eventData} />
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <div>Participants</div>
+                <Participants eventData={eventData} />
             </TabPanel>
             {eventData.enableQualifications && (
                 <TabPanel value={value} index={4}>
