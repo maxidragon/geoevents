@@ -8,8 +8,10 @@ import { IEvent } from "@/logic/interfaces";
 const SearchBar = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState<IEvent[]>([]);
+    const [searchValue, setSearchValue] = useState("");
 
     const handleSearch = (search: string) => {
+        setSearchValue(search);
         searchEvents(search).then((data) => {
             setEvents(data);
         });
@@ -19,10 +21,12 @@ const SearchBar = () => {
         <Autocomplete
             freeSolo
             options={events.map((option) => option.name)}
+            value={searchValue}
             onChange={(_, value) => {
                 const event = events.find((e) => e.name === value);
                 if (event) {
                     navigate(`/events/${event?.id}`);
+                    setSearchValue("");
                 }
             }}
             renderInput={(params) => (
@@ -30,6 +34,7 @@ const SearchBar = () => {
                     {...params}
                     variant="standard"
                     label="Search"
+                    value={searchValue}
                     onChange={(e) => handleSearch(e.target.value)}
                     sx={{
                         width: {
