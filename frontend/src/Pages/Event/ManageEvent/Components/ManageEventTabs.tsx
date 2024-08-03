@@ -8,14 +8,15 @@ import { a11yTabsProps } from "@/logic/utils";
 
 import EditEvent from "./Tabs/EditEvent";
 import ManageRegistrations from "./Tabs/ManageRegistrations";
+import QualificationResults from "./Tabs/QualificationResults";
 
 const tabs = {
     edit: 0,
     manageRegistrations: 1,
-    qualificationsResults: 3,
-    groups: 4,
-    groupStageResults: 5,
-    knockoutStageResults: 6,
+    qualificationsResults: 2,
+    groups: 3,
+    groupStageResults: 4,
+    knockoutStageResults: 5,
 };
 
 interface ManagaEventTabsProps {
@@ -55,24 +56,37 @@ const ManageEventTabs = ({ eventData, fetchData }: ManagaEventTabsProps) => {
                     <Tab label="Manage registrations" {...a11yTabsProps(1)} />
                     <Tab
                         label="Qualifications results"
-                        {...a11yTabsProps(3)}
-                        sx={{}}
+                        {...a11yTabsProps(2)}
+                        sx={{
+                            display: eventData.enableQualifications
+                                ? "block"
+                                : "none",
+                        }}
                     />
-                    {eventData.enableGroups && (
-                        <Tab label="Groups" {...a11yTabsProps(4)} />
-                    )}
-                    {eventData.enableGroups && (
-                        <Tab
-                            label="Group stage results"
-                            {...a11yTabsProps(5)}
-                        />
-                    )}
-                    {eventData.enableKnockoutStage && (
-                        <Tab
-                            label="Knockout stage results"
-                            {...a11yTabsProps(6)}
-                        />
-                    )}
+                    <Tab
+                        label="Groups"
+                        {...a11yTabsProps(3)}
+                        sx={{
+                            display: eventData.enableGroups ? "block" : "none",
+                        }}
+                    />
+                    <Tab
+                        label="Group stage results"
+                        {...a11yTabsProps(4)}
+                        sx={{
+                            display: eventData.enableGroups ? "block" : "none",
+                        }}
+                    />
+
+                    <Tab
+                        label="Knockout stage results"
+                        {...a11yTabsProps(5)}
+                        sx={{
+                            display: eventData.enableKnockoutStage
+                                ? "block"
+                                : "none",
+                        }}
+                    />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -83,6 +97,9 @@ const ManageEventTabs = ({ eventData, fetchData }: ManagaEventTabsProps) => {
                     eventData={eventData}
                     fetchData={fetchData}
                 />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <QualificationResults eventData={eventData} />
             </TabPanel>
         </>
     );

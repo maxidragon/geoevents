@@ -34,7 +34,7 @@ model Token {
 }
 
 model Event {
-  id                      String               @id @default(uuid())
+  id                      String                @id @default(uuid())
   name                    String
   startDate               DateTime
   endDate                 DateTime
@@ -47,13 +47,13 @@ model Event {
   enableGroups            Boolean
   enableKnockoutStage     Boolean
   isPublic                Boolean
-  useExternalRegistration Boolean              @default(false)
+  useExternalRegistration Boolean               @default(false)
   mapId                   String?
-  map                     Map?                 @relation(fields: [mapId], references: [id])
+  map                     Map?                  @relation(fields: [mapId], references: [id])
   organizers              EventOrganizer[]
-  qualificationRounds     QualificationRound[]
   registrations           Registration[]
   groups                  Group[]
+  QualificationResult     QualificationResult[]
 }
 
 model EventOrganizer {
@@ -97,22 +97,17 @@ model Map {
   Event Event[]
 }
 
-model QualificationRound {
-  id                  String                @id @default(uuid())
-  eventId             String
-  event               Event                 @relation(fields: [eventId], references: [id])
-  QualificationResult QualificationResult[]
-}
-
 model QualificationResult {
-  id                   String             @id @default(uuid())
-  qualificationRoundId String
-  qualificationRound   QualificationRound @relation(fields: [qualificationRoundId], references: [id])
-  registrationId       String
-  registration         Registration       @relation(fields: [registrationId], references: [id])
-  score                Int
-  maxScore             Int
-  totalTime            Int
+  id             String       @id @default(uuid())
+  eventId        String
+  event          Event        @relation(fields: [eventId], references: [id])
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  score          Int
+  maxScore       Int
+  totalTime      Int
+
+  @@unique([eventId, registrationId])
 }
 
 model Group {

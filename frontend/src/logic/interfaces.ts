@@ -48,6 +48,14 @@ export interface RegistrationHistory {
 
 export type RegistrationAction = "CREATED" | "DELETED" | "ACCEPTED";
 
+export interface QualificationResult {
+    id: string;
+    registrationId: string;
+    registration: Registration | null;
+    score: number;
+    maxScore: number;
+    totalTime: number;
+}
 export interface Map {
     id: string;
     name: string;

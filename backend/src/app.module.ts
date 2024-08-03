@@ -6,6 +6,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EventModule } from './event/event.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './user/user.module';
+import { QualificationModule } from './qualification/qualification.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UserModule } from './user/user.module';
     }),
     EventModule,
     UserModule,
+    QualificationModule,
   ],
   controllers: [AppController],
 })
