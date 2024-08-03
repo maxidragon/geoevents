@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { EventService } from './event.service';
@@ -26,6 +27,15 @@ export class EventController {
   @Get('upcoming')
   async getUpcomingEvents() {
     return await this.eventService.getUpcomingEvents();
+  }
+
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('search')
+  async searchEvents(
+    @Query('search') search: string,
+    @GetUser() user: JwtAuthDto,
+  ) {
+    return await this.eventService.searchEvents(search, user?.userId);
   }
 
   @UseGuards(AdminGuard)

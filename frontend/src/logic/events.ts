@@ -164,3 +164,12 @@ export const moveRegistrationToPending = async (
     );
     return response.status;
 };
+
+export const searchEvents = async (search: string) => {
+    const response = await backendRequest(
+        `event/search?search=${search}`,
+        "GET",
+        true
+    );
+    return await response.json();
+};

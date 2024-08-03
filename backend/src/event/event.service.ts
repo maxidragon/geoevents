@@ -19,6 +19,54 @@ export class EventService {
     });
   }
 
+  async searchEvents(search: string, userId: string) {
+    if (userId) {
+      const isAdmin = await this.prisma.user.findFirst({
+        where: {
+          id: userId,
+          role: 'ADMIN',
+        },
+      });
+
+      if (isAdmin) {
+        return await this.prisma.event.findMany({
+          where: {
+            name: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        });
+      }
+    }
+    return await this.prisma.event.findMany({
+      where: {
+        AND: [
+          {
+            name: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            OR: [
+              {
+                organizers: {
+                  some: {
+                    userId,
+                  },
+                },
+              },
+              {
+                isPublic: true,
+              },
+            ],
+          },
+        ],
+      },
+    });
+  }
+
   async getMyEvents(userId: string) {
     const whereParams = {
       OR: [

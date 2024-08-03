@@ -1,7 +1,8 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import LoginPartial from "./LoginPartial";
+import SearchBar from "./SearchBar";
 
 interface NavbarProps {
     title?: string;
@@ -9,7 +10,15 @@ interface NavbarProps {
 
 const Navbar = ({ title }: NavbarProps) => {
     return (
-        <AppBar position="static" color="primary" sx={{ width: "100%" }}>
+        <AppBar
+            position="static"
+            color="primary"
+            sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+        >
             <Toolbar>
                 <Typography
                     variant="h6"
@@ -21,7 +30,10 @@ const Navbar = ({ title }: NavbarProps) => {
                 >
                     {title ? title : "GeoEvents"}
                 </Typography>
-                <LoginPartial />
+                <Box sx={{ display: "flex", gap: 2 }}>
+                    <SearchBar />
+                    <LoginPartial />
+                </Box>
             </Toolbar>
         </AppBar>
     );
