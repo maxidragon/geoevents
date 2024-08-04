@@ -149,6 +149,15 @@ const EventForm = ({ eventData, onSubmit }: EventFormProps) => {
                 }
                 label="Enable qualification phase"
             />
+            {editedEvent.enableQualifications && (
+                <TextField
+                    type="number"
+                    label="Proceed from qualifications"
+                    name="proceedFromQualifications"
+                    value={editedEvent.proceedFromQualifications}
+                    onChange={handleChange}
+                />
+            )}
             <FormControlLabel
                 control={
                     <Checkbox

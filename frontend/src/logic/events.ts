@@ -16,6 +16,7 @@ export const defaultEvent: IEvent = {
     enableQualifications: true,
     enableGroups: true,
     enableKnockoutStage: true,
+    proceedFromQualifications: 0,
     mapId: "",
     map: {
         id: "",
@@ -24,6 +25,7 @@ export const defaultEvent: IEvent = {
     },
     organizers: [],
     registrations: [],
+    qualificationResults: [],
 };
 
 export const defaultRegistration: Registration = {

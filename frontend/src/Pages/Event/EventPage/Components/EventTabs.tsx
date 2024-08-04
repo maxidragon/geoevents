@@ -9,6 +9,7 @@ import { a11yTabsProps } from "@/logic/utils";
 
 import BasicInformation from "./Tabs/BasicInformation";
 import Participants from "./Tabs/Participants";
+import QualificationResults from "./Tabs/QualificationResults";
 import Register from "./Tabs/Register";
 
 interface EventTabsProps {
@@ -114,7 +115,7 @@ const EventTabs = ({ eventData }: EventTabsProps) => {
             </TabPanel>
             {eventData.enableQualifications && (
                 <TabPanel value={value} index={4}>
-                    <div>Qualifications results</div>
+                    <QualificationResults eventData={eventData} />
                 </TabPanel>
             )}
             {eventData.enableGroups && (

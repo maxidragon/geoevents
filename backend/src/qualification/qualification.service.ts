@@ -50,4 +50,28 @@ export class QualificationService {
       message: 'Result entered successfully',
     };
   }
+
+  async deleteResult(id: string, userId: string) {
+    const result = await this.prisma.qualificationResult.findUnique({
+      where: { id },
+      include: { event: true },
+    });
+    if (!result) {
+      throw new HttpException('Result not found', 404);
+    }
+    const hasPermission = await this.eventService.hasPermissionToManage(
+      result.eventId,
+      userId,
+    );
+    if (!hasPermission) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+    await this.prisma.qualificationResult.delete({ where: { id } });
+    return {
+      message: 'Result deleted successfully',
+    };
+  }
 }

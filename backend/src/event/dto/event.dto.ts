@@ -3,8 +3,10 @@ import {
   IsBoolean,
   IsDate,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
+  Min,
 } from 'class-validator';
 
 export class EventDto {
@@ -49,6 +51,10 @@ export class EventDto {
 
   @IsBoolean()
   enableKnockoutStage: boolean;
+
+  @IsNumber()
+  @Min(0)
+  proceedFromQualifications: number;
 
   @IsArray()
   organizers: User[];

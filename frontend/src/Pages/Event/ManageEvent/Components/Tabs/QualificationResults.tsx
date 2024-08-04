@@ -1,14 +1,28 @@
 import { Box, Typography } from "@mui/material";
+import { useState } from "react";
 
-import { IEvent } from "@/logic/interfaces";
+import { IEvent, QualificationResult } from "@/logic/interfaces";
+import { defaultResult } from "@/logic/qualificationResults";
+import ResultsTable from "@/Pages/Event/Components/ResultsTable/ResultsTable";
 
 import EnterResultForm from "./Components/EnterResultForm";
 
 interface QualificationResultsProps {
     eventData: IEvent;
+    fetchData: () => void;
 }
 
-const QualificationResults = ({ eventData }: QualificationResultsProps) => {
+const QualificationResults = ({
+    eventData,
+    fetchData,
+}: QualificationResultsProps) => {
+    const [editedResult, setEditedResult] =
+        useState<QualificationResult>(defaultResult);
+
+    const handleEdit = (result: QualificationResult) => {
+        setEditedResult(result);
+    };
+
     return (
         <Box
             sx={{
@@ -32,7 +46,12 @@ const QualificationResults = ({ eventData }: QualificationResultsProps) => {
                     },
                 }}
             >
-                <EnterResultForm eventData={eventData} />
+                <EnterResultForm
+                    eventData={eventData}
+                    result={editedResult}
+                    setResult={setEditedResult}
+                    fetchData={fetchData}
+                />
             </Box>
             <Box
                 sx={{
@@ -43,6 +62,15 @@ const QualificationResults = ({ eventData }: QualificationResultsProps) => {
                 }}
             >
                 <Typography variant="h6">Qualifications results</Typography>
+                <ResultsTable
+                    qualificationResults={eventData.qualificationResults}
+                    proceedFromQualifications={
+                        eventData.proceedFromQualifications
+                    }
+                    editable
+                    onEdit={handleEdit}
+                    fetchData={fetchData}
+                />
             </Box>
         </Box>
     );

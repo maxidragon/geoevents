@@ -99,7 +99,10 @@ const ManageEventTabs = ({ eventData, fetchData }: ManagaEventTabsProps) => {
                 />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <QualificationResults eventData={eventData} />
+                <QualificationResults
+                    eventData={eventData}
+                    fetchData={fetchData}
+                />
             </TabPanel>
         </>
     );

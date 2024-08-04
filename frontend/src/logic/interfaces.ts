@@ -20,10 +20,12 @@ export interface IEvent {
     enableKnockoutStage: boolean;
     isPublic: boolean;
     useExternalRegistration: boolean;
+    proceedFromQualifications: number;
     mapId?: string;
     map: Map;
     organizers: UserInfo[];
     registrations: Registration[];
+    qualificationResults: QualificationResult[];
 }
 
 export interface Registration {

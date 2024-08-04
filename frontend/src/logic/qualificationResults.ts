@@ -22,3 +22,12 @@ export const enterOrUpdateResult = async (
     );
     return response.status;
 };
+
+export const deleteResult = async (id: string) => {
+    const response = await backendRequest(
+        `qualification/${id}`,
+        "DELETE",
+        true
+    );
+    return response.status;
+};

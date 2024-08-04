@@ -34,26 +34,27 @@ model Token {
 }
 
 model Event {
-  id                      String                @id @default(uuid())
-  name                    String
-  startDate               DateTime
-  endDate                 DateTime
-  registrationOpen        DateTime?
-  registrationClose       DateTime?
-  address                 String
-  description             String?
-  autoAcceptRegistrations Boolean
-  enableQualifications    Boolean
-  enableGroups            Boolean
-  enableKnockoutStage     Boolean
-  isPublic                Boolean
-  useExternalRegistration Boolean               @default(false)
-  mapId                   String?
-  map                     Map?                  @relation(fields: [mapId], references: [id])
-  organizers              EventOrganizer[]
-  registrations           Registration[]
-  groups                  Group[]
-  QualificationResult     QualificationResult[]
+  id                        String                @id @default(uuid())
+  name                      String
+  startDate                 DateTime
+  endDate                   DateTime
+  registrationOpen          DateTime?
+  registrationClose         DateTime?
+  address                   String
+  description               String?
+  autoAcceptRegistrations   Boolean
+  enableQualifications      Boolean
+  enableGroups              Boolean
+  enableKnockoutStage       Boolean
+  isPublic                  Boolean
+  useExternalRegistration   Boolean               @default(false)
+  mapId                     String?
+  map                       Map?                  @relation(fields: [mapId], references: [id])
+  proceedFromQualifications Int                   @default(0)
+  organizers                EventOrganizer[]
+  registrations             Registration[]
+  groups                    Group[]
+  QualificationResult       QualificationResult[]
 }
 
 model EventOrganizer {

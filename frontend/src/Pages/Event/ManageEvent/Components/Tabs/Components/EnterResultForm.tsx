@@ -6,7 +6,6 @@ import {
     Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
 
 import TimeInput from "@/Components/TimeInput";
 import { IEvent, QualificationResult, Registration } from "@/logic/interfaces";
@@ -17,11 +16,17 @@ import {
 
 interface EnterResultFormProps {
     eventData: IEvent;
+    result: QualificationResult;
+    setResult: (result: QualificationResult) => void;
+    fetchData: () => void;
 }
 
-const EnterResultForm = ({ eventData }: EnterResultFormProps) => {
-    const [result, setResult] = useState<QualificationResult>(defaultResult);
-
+const EnterResultForm = ({
+    eventData,
+    result,
+    setResult,
+    fetchData,
+}: EnterResultFormProps) => {
     const handleSubmit = async () => {
         const status = await enterOrUpdateResult(eventData.id, result);
         if (status === 201) {
@@ -29,6 +34,7 @@ const EnterResultForm = ({ eventData }: EnterResultFormProps) => {
                 variant: "success",
             });
             setResult(defaultResult);
+            fetchData();
         } else {
             enqueueSnackbar("Something went wrong", {
                 variant: "error",
@@ -46,11 +52,19 @@ const EnterResultForm = ({ eventData }: EnterResultFormProps) => {
                 }
                 onChange={(_, value: Registration | null) => {
                     if (value) {
-                        setResult({
-                            ...result,
-                            registration: value,
-                            registrationId: value.id,
-                        });
+                        const existingResult =
+                            eventData.qualificationResults.find(
+                                (r) => r.registrationId === value.id
+                            );
+                        if (existingResult) {
+                            setResult(existingResult);
+                        } else {
+                            setResult({
+                                ...result,
+                                registration: value,
+                                registrationId: value.id,
+                            });
+                        }
                     }
                 }}
                 value={result.registration}

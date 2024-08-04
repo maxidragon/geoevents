@@ -1,7 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { EventDto } from './dto/event.dto';
-import { RegistrationAction, RegistrationStatus } from '@prisma/client';
+import {
+  QualificationResult,
+  RegistrationAction,
+  RegistrationStatus,
+} from '@prisma/client';
 import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
@@ -155,6 +159,7 @@ export class EventService {
         enableQualifications: true,
         enableGroups: true,
         enableKnockoutStage: true,
+        proceedFromQualifications: true,
         map: true,
         organizers: {
           select: {
@@ -163,6 +168,28 @@ export class EventService {
                 id: true,
                 username: true,
                 fullName: true,
+              },
+            },
+          },
+        },
+        QualificationResult: {
+          select: {
+            id: true,
+            eventId: true,
+            registrationId: true,
+            score: true,
+            maxScore: true,
+            totalTime: true,
+            registration: {
+              select: {
+                id: true,
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    fullName: true,
+                  },
+                },
               },
             },
           },
@@ -193,6 +220,9 @@ export class EventService {
     ) {
       return {
         ...event,
+        qualificationResults: this.orderQualificationResults(
+          event.QualificationResult,
+        ),
         organizers: event.organizers.map((organizer) => organizer.user),
       };
     }
@@ -223,6 +253,7 @@ export class EventService {
         enableKnockoutStage: data.enableKnockoutStage,
         registrationOpen: data.registrationOpen,
         registrationClose: data.registrationClose,
+        proceedFromQualifications: data.proceedFromQualifications,
       },
     });
     await this.prisma.eventOrganizer.createMany({
@@ -272,6 +303,7 @@ export class EventService {
         enableKnockoutStage: data.enableKnockoutStage,
         registrationOpen: data.registrationOpen,
         registrationClose: data.registrationClose,
+        proceedFromQualifications: data.proceedFromQualifications,
       },
     });
 
@@ -546,6 +578,30 @@ export class EventService {
           },
         },
       },
+    });
+  }
+
+  orderQualificationResults(results: QualificationResult[]) {
+    return results.sort((a, b) => {
+      if (a.score > b.score) {
+        return -1;
+      } else if (a.score < b.score) {
+        return 1;
+      } else {
+        if (a.maxScore > b.maxScore) {
+          return -1;
+        } else if (a.maxScore < b.maxScore) {
+          return 1;
+        } else {
+          if (a.totalTime < b.totalTime) {
+            return -1;
+          } else if (a.totalTime > b.totalTime) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      }
     });
   }
 }
