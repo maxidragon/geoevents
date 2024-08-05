@@ -17,6 +17,7 @@ import ManageEvent from "./Pages/Event/ManageEvent/ManageEvent";
 import MyEvents from "./Pages/Event/MyEvents/MyEvents";
 import NewEvent from "./Pages/Event/NewEvent/NewEvent";
 import Home from "./Pages/Home/Home";
+import Users from "./Pages/Users/Users";
 
 const darkTheme = createTheme({
     palette: {
@@ -69,6 +70,10 @@ const App = () => {
                 {
                     path: "events/:id/manage",
                     element: <ManageEvent />,
+                },
+                {
+                    path: "users",
+                    element: <Users />,
                 },
             ],
         },

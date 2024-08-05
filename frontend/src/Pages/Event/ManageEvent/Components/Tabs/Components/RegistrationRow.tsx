@@ -139,6 +139,7 @@ const RegistrationRow = ({ registration, fetchData }: RegistrationRowProps) => {
                 <TableCell component="th" scope="row">
                     {registration.user.fullName} ({registration.user.username})
                 </TableCell>
+                <TableCell>{registration.user.email}</TableCell>
                 <TableCell>{registration.comment}</TableCell>
                 <TableCell>{enumToName(registration.status)}</TableCell>
                 <TableCell>

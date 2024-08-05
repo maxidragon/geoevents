@@ -4,6 +4,7 @@ export interface UserInfo {
     role: string;
     username: string;
     fullName: string;
+    confirmedAt?: Date;
 }
 
 export interface IEvent {

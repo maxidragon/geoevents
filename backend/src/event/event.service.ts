@@ -202,6 +202,7 @@ export class EventService {
               select: {
                 id: true,
                 username: true,
+                email: hasPermission ? true : false,
                 fullName: true,
               },
             },

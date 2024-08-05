@@ -32,6 +32,7 @@ const RegistrationsTable = ({
                     <TableRow>
                         <TableCell />
                         <TableCell>Name</TableCell>
+                        <TableCell>Email</TableCell>
                         <TableCell>Comment</TableCell>
                         <TableCell>Status</TableCell>
                         <TableCell>Actions</TableCell>
