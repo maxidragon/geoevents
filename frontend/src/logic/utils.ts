@@ -1,5 +1,3 @@
-import { RegistrationAction } from "./interfaces";
-
 export const formatDateRange = (startDate: Date, endDate: Date) => {
     if (startDate.getDate() === endDate.getDate()) {
         return startDate.toLocaleDateString();
@@ -15,12 +13,5 @@ export const a11yTabsProps = (index: number) => {
 };
 
 export const enumToName = (value: string) => {
-    return value.slice(0, 1) + value.slice(1).toLowerCase();
-};
-
-export const registrationActionToName = (value: RegistrationAction) => {
-    if (value === "CREATED") {
-        return "Created/Moved to pending";
-    }
-    return enumToName(value);
+    return value.slice(0, 1) + value.slice(1).toLowerCase().replace(/_/g, " ");
 };

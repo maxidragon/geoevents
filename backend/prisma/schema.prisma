@@ -178,6 +178,7 @@ enum RegistrationAction {
   CREATED
   DELETED
   ACCEPTED
+  MOVED_TO_PENDING
 }
 
 enum RegistrationStatus {

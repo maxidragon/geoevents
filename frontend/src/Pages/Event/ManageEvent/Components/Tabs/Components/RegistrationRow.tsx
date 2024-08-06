@@ -27,7 +27,7 @@ import {
     moveRegistrationToPending,
 } from "@/logic/events";
 import { Registration } from "@/logic/interfaces";
-import { enumToName, registrationActionToName } from "@/logic/utils";
+import { enumToName } from "@/logic/utils";
 
 interface RegistrationRowProps {
     registration: Registration;
@@ -201,7 +201,7 @@ const RegistrationRow = ({ registration, fetchData }: RegistrationRowProps) => {
                                                     ).toLocaleString()}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {registrationActionToName(
+                                                    {enumToName(
                                                         historyRow.action
                                                     )}
                                                 </TableCell>

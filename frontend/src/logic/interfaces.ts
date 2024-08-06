@@ -49,7 +49,11 @@ export interface RegistrationHistory {
     performedBy: UserInfo;
 }
 
-export type RegistrationAction = "CREATED" | "DELETED" | "ACCEPTED";
+export type RegistrationAction =
+    | "CREATED"
+    | "DELETED"
+    | "ACCEPTED"
+    | "MOVED_TO_PENDING";
 
 export interface QualificationResult {
     id: string;

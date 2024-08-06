@@ -570,7 +570,7 @@ export class EventService {
         status: RegistrationStatus.PENDING,
         registrationHistory: {
           create: {
-            action: RegistrationAction.CREATED,
+            action: RegistrationAction.MOVED_TO_PENDING,
             performedBy: {
               connect: {
                 id: userId,
