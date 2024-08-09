@@ -20,6 +20,7 @@ model User {
   eventOrganizer      EventOrganizer[]
   registrations       Registration[]
   RegistrationHistory RegistrationHistory[]
+  ApiKey              ApiKey[]
 }
 
 model Token {
@@ -55,6 +56,20 @@ model Event {
   registrations             Registration[]
   groups                    Group[]
   QualificationResult       QualificationResult[]
+  ApiKey                    ApiKey[]
+}
+
+model ApiKey {
+  id            String   @id @default(uuid())
+  key           String   @unique
+  eventId       String
+  event         Event    @relation(fields: [eventId], references: [id])
+  generatedById String
+  generatedBy   User     @relation(fields: [generatedById], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt()
+
+  @@unique([eventId, key])
 }
 
 model EventOrganizer {

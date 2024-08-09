@@ -6,8 +6,21 @@ import svgrPlugin from "vite-plugin-svgr";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+    optimizeDeps: {
+        include: [
+            "@emotion/react",
+            "@emotion/styled",
+            "@mui/material/Tooltip",
+            "@mui/material/styles",
+        ],
+    },
     plugins: [
-        react(),
+        react({
+            jsxImportSource: "@emotion/react",
+            babel: {
+                plugins: ["@emotion/babel-plugin"],
+            },
+        }),
         checker({
             overlay: { initialIsOpen: false },
             typescript: true,
