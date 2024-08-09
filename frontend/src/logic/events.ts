@@ -63,8 +63,12 @@ export const createEvent = async (event: IEvent) => {
     };
 };
 
-export const getEventById = async (id: string) => {
-    const response = await backendRequest(`event/${id}`, "GET", true);
+export const getEventById = async (id: string, isPublic: boolean = true) => {
+    const response = await backendRequest(
+        `event/${id}?isPublic=${isPublic}`,
+        "GET",
+        true
+    );
     return {
         data: await response.json(),
         status: response.status,

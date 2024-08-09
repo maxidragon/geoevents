@@ -127,8 +127,12 @@ export class EventController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id')
-  async getEventById(@GetUser() user: JwtAuthDto, @Param('id') id: string) {
-    return await this.eventService.getEventById(id, user.userId);
+  async getEventById(
+    @GetUser() user: JwtAuthDto,
+    @Param('id') id: string,
+    @Query('isPublic') isPublic: boolean = true,
+  ) {
+    return await this.eventService.getEventById(id, user.userId, isPublic);
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -1,7 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Loading from "@/Components/Loading";
 import { getEventById, hasPermissionToManage } from "@/logic/events";
@@ -19,7 +19,7 @@ const ManageEvent = () => {
             navigate("/");
             return;
         }
-        const response = await getEventById(id);
+        const response = await getEventById(id, false);
         if (response.status === 200) {
             if (hasPermissionToManage(response.data)) {
                 setEventData(response.data);
@@ -54,9 +54,28 @@ const ManageEvent = () => {
                 p: 2,
             }}
         >
-            <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
-                {eventData.name}
-            </Typography>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: {
+                        xs: "column",
+                        md: "row",
+                    },
+                    justifyContent: "space-between",
+                }}
+            >
+                <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
+                    {eventData.name}
+                </Typography>
+                <Button
+                    component={Link}
+                    to={`/events/${id}`}
+                    variant="contained"
+                    sx={{ width: "fit-content", height: "fit-content" }}
+                >
+                    Public view
+                </Button>
+            </Box>
             <ManageEventTabs eventData={eventData} fetchData={fetchData} />
         </Box>
     );

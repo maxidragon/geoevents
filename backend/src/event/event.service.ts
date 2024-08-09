@@ -122,11 +122,13 @@ export class EventService {
     };
   }
 
-  async getEventById(id: string, userId: string) {
+  async getEventById(id: string, userId: string, isPublic: boolean) {
     const hasPermission = await this.hasPermissionToManage(id, userId);
-    const registrationsWhereParams = hasPermission
-      ? {}
-      : { status: RegistrationStatus.ACCEPTED };
+    const registrationsWhereParams = isPublic
+      ? { status: RegistrationStatus.ACCEPTED }
+      : hasPermission
+        ? {}
+        : { status: RegistrationStatus.ACCEPTED };
     const registrationHistorySelect = {
       select: {
         id: true,
@@ -208,7 +210,9 @@ export class EventService {
             },
             status: true,
             registrationHistory: hasPermission
-              ? registrationHistorySelect
+              ? isPublic
+                ? false
+                : registrationHistorySelect
               : false,
           },
           where: registrationsWhereParams,

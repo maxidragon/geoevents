@@ -27,7 +27,26 @@ const EnterResultForm = ({
     setResult,
     fetchData,
 }: EnterResultFormProps) => {
+    const acceptedRegistrations = eventData.registrations.filter(
+        (r) => r.status === "ACCEPTED"
+    );
     const handleSubmit = async () => {
+        if (
+            result.score === 0 ||
+            result.maxScore === 0 ||
+            result.totalTime === 0
+        ) {
+            enqueueSnackbar("Please fill in all fields", {
+                variant: "error",
+            });
+            return;
+        }
+        if (result.maxScore > result.score) {
+            enqueueSnackbar("Score can't be higher than max score", {
+                variant: "error",
+            });
+            return;
+        }
         const status = await enterOrUpdateResult(eventData.id, result);
         if (status === 201) {
             enqueueSnackbar("Result entered", {
@@ -46,7 +65,7 @@ const EnterResultForm = ({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography variant="h6">Enter qualification result</Typography>
             <Autocomplete
-                options={eventData.registrations}
+                options={acceptedRegistrations}
                 getOptionLabel={(option: Registration) =>
                     `${option.user.fullName} (${option.user.username})`
                 }

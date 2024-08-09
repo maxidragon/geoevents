@@ -26,7 +26,10 @@ const RegistrationsTable = ({
         return <Typography variant="h6">No registrations</Typography>;
     }
     return (
-        <TableContainer component={Paper}>
+        <TableContainer
+            component={Paper}
+            sx={{ maxHeight: "60vh", overflowY: "auto" }}
+        >
             <Table stickyHeader>
                 <TableHead>
                     <TableRow>

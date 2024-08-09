@@ -61,7 +61,8 @@ const Participants = ({ eventData }: ParticipantsProps) => {
                                     oolor: "white",
                                 }}
                             >
-                                Total: {eventData.registrations.length}
+                                Total: {eventData.registrations.length}{" "}
+                                participants
                             </TableCell>
                         </TableRow>
                     </TableFooter>
