@@ -1,3 +1,4 @@
+import { sha512 } from 'js-sha512';
 import { HttpException, Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { EventDto } from './dto/event.dto';
@@ -7,6 +8,8 @@ import {
   RegistrationStatus,
 } from '@prisma/client';
 import { RegisterDto } from './dto/register.dto';
+import { ExternalRegistrationDto } from './dto/externalRegistration.dto';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class EventService {
@@ -200,6 +203,7 @@ export class EventService {
           select: {
             id: true,
             eventId: true,
+            comment: hasPermission ? true : false,
             user: {
               select: {
                 id: true,
@@ -405,6 +409,126 @@ export class EventService {
     }
     return {
       message: 'Successfully registered for event',
+    };
+  }
+
+  async addRegistration(dto: ExternalRegistrationDto, apiKey: string) {
+    const apiKeyFromDb = await this.prisma.apiKey.findUnique({
+      where: {
+        key: sha512(apiKey).toString(),
+      },
+    });
+    if (!apiKeyFromDb) {
+      throw new HttpException('Invalid API key', 403);
+    }
+
+    const event = await this.prisma.event.findFirst({
+      where: {
+        id: apiKeyFromDb.eventId,
+      },
+    });
+
+    if (!event) {
+      throw new HttpException('Event not found', 404);
+    }
+
+    if (!event.useExternalRegistration) {
+      throw new HttpException(
+        'This event does not allow external registration',
+        400,
+      );
+    }
+
+    const user = await this.prisma.user.upsert({
+      where: {
+        email: dto.email,
+      },
+      update: {
+        username: dto.username,
+        fullName: dto.fullName,
+      },
+      create: {
+        email: dto.email,
+        username: dto.username,
+        fullName: dto.fullName,
+        password: 'dummy-password',
+      },
+    });
+
+    const registration = await this.prisma.registration.create({
+      data: {
+        eventId: event.id,
+        userId: user.id,
+        comment: dto.comment,
+        status: RegistrationStatus.PENDING,
+        registrationHistory: {
+          create: {
+            action: RegistrationAction.CREATED,
+            performedBy: {
+              connect: {
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
+    });
+    await this.prisma.registration.update({
+      where: {
+        id: registration.id,
+      },
+      data: {
+        status: RegistrationStatus.ACCEPTED,
+        registrationHistory: {
+          create: {
+            action: RegistrationAction.ACCEPTED,
+            performedBy: {
+              connect: {
+                id: user.id,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return {
+      message: 'Successfully registered for event',
+    };
+  }
+
+  async getApiKey(eventId: string, userId: string) {
+    if (!(await this.hasPermissionToManage(eventId, userId))) {
+      throw new HttpException(
+        'You do not have permission to manage this event',
+        403,
+      );
+    }
+
+    await this.prisma.apiKey.deleteMany({
+      where: {
+        eventId,
+      },
+    });
+
+    const apiKey = crypto.randomBytes(32).toString('hex');
+    await this.prisma.apiKey.create({
+      data: {
+        key: sha512(apiKey).toString(),
+        generatedBy: {
+          connect: {
+            id: userId,
+          },
+        },
+        event: {
+          connect: {
+            id: eventId,
+          },
+        },
+      },
+    });
+    return {
+      apiKey,
     };
   }
 

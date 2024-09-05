@@ -10,12 +10,19 @@ export class LoggerMiddleware implements NestMiddleware {
 
   async use(req: any, res: Response, next: NextFunction) {
     if (req.headers.authorization) {
-      const user = await this.authService.validateJwt(
-        req.headers.authorization.split(' ')[1],
-      );
-      this.logger.log(
-        `Logging HTTP request ${req.method} ${req.baseUrl} ${res.statusCode} from user ${user.userId} body: ${JSON.stringify(req.body)}`,
-      );
+      if (req.headers.authorization.startsWith('Bearer ')) {
+        const user = await this.authService.validateJwt(
+          req.headers.authorization.split(' ')[1],
+        );
+        this.logger.log(
+          `Logging HTTP request ${req.method} ${req.baseUrl} ${res.statusCode} from user ${user.userId} body: ${JSON.stringify(req.body)}`,
+        );
+      } else {
+        const apiKey = req.headers.authorization.split(' ')[1];
+        this.logger.log(
+          `Logging HTTP request ${req.method} ${req.baseUrl} ${res.statusCode} body: ${JSON.stringify(req.body)}, apiKey: ${apiKey}`,
+        );
+      }
     } else {
       const baseUrl = req.baseUrl;
       if (baseUrl.includes('health')) {

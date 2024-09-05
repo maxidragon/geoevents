@@ -265,4 +265,14 @@ export class AuthService {
     });
     return 'Password changed';
   }
+
+  async internalVerifyToken(token: string) {
+    const apiKey = await this.prisma.apiKey.findFirst({
+      where: {
+        key: sha512(token).toString(),
+      },
+    });
+
+    return !!apiKey;
+  }
 }

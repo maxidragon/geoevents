@@ -179,3 +179,12 @@ export const searchEvents = async (search: string) => {
     );
     return await response.json();
 };
+
+export const getApiKey = async (eventId: string) => {
+    const response = await backendRequest(
+        `event/${eventId}/api-key`,
+        "GET",
+        true
+    );
+    return await response.json();
+};

@@ -19,6 +19,9 @@ import { GetUser } from 'src/auth/decorator/getUser.decorator';
 import { JwtAuthDto } from 'src/auth/dto/jwt-auth.dto';
 import { OptionalJwtAuthGuard } from 'src/auth/guards/optionalJwt.guard';
 import { RegisterDto } from './dto/register.dto';
+import { TokenGuard } from 'src/auth/guards/token.guard';
+import { ExternalRegistrationDto } from './dto/externalRegistration.dto';
+import { GetToken } from 'src/auth/decorator/getToken.decorator';
 
 @Controller('event')
 export class EventController {
@@ -44,10 +47,26 @@ export class EventController {
     return await this.eventService.createEvent(data);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id/api-key')
+  async getApiKey(@Param('id') id: string, @GetUser() user: JwtAuthDto) {
+    return await this.eventService.getApiKey(id, user.userId);
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('my')
   async getEventsOrganizedByMe(@GetUser() user: JwtAuthDto) {
     return await this.eventService.getMyEvents(user.userId);
+  }
+
+  @UseGuards(TokenGuard)
+  @Post('external/register')
+  async registerForEventExternal(
+    @Body() data: ExternalRegistrationDto,
+    @GetToken() token: string,
+  ) {
+    return await this.eventService.addRegistration(data, token);
   }
 
   @HttpCode(HttpStatus.OK)
