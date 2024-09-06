@@ -30,12 +30,8 @@ const ShowApiKeyModal = ({ isOpen, onClose, apiKey }: ShowApiKeyModalProps) => {
                 <Typography variant="h6">API key</Typography>
                 <TextField
                     value={apiKey}
-                    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    //@ts-ignore
-                    slotProps={{
-                        input: {
-                            readOnly: true,
-                        },
+                    InputProps={{
+                        readOnly: true,
                     }}
                 />
                 <Button variant="contained" onClick={handleCopy}>
