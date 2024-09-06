@@ -1,0 +1,39 @@
+services:
+  backend:
+    image: "ghcr.io/maxidragon/geoevents/geoevents-backend:main"
+    container_name: geoevents-prod-backend
+    ports:
+      - "5009:5000"
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://root:password@database:5432/geoevents
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 5s
+      timeout: 20s
+      retries: 50
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+  database:
+    image: postgres:16
+    container_name: geoevents-prod-database
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=geoevents
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres"]
+      interval: 5s
+      timeout: 20s
+      retries: 50
+    
+volumes:
+  database:
