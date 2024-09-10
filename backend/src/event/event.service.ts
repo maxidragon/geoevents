@@ -473,24 +473,6 @@ export class EventService {
         },
       },
     });
-    await this.prisma.registration.update({
-      where: {
-        id: registration.id,
-      },
-      data: {
-        status: RegistrationStatus.ACCEPTED,
-        registrationHistory: {
-          create: {
-            action: RegistrationAction.ACCEPTED,
-            performedBy: {
-              connect: {
-                id: user.id,
-              },
-            },
-          },
-        },
-      },
-    });
 
     return {
       message: 'Successfully registered for event',
