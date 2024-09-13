@@ -3,7 +3,7 @@ services:
     image: "ghcr.io/maxidragon/geoevents/geoevents-backend:main"
     container_name: geoevents-prod-backend
     ports:
-      - "5009:5000"
+      - "127.0.0.1:5009:5000"
     restart: unless-stopped
     environment:
       - DATABASE_URL=postgres://root:password@database:5432/geoevents
