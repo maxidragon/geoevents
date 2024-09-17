@@ -27,17 +27,23 @@ const ManageRegistrations = ({
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography variant="h5">Pending registrations</Typography>
+            <Typography variant="h5">
+                Pending registrations ({pendingRegistrations.length})
+            </Typography>
             <RegistrationsTable
                 registrations={pendingRegistrations}
                 fetchData={fetchData}
             />
-            <Typography variant="h5">Accepted registrations</Typography>
+            <Typography variant="h5">
+                Accepted registrations ({acceptedRegistrations.length})
+            </Typography>
             <RegistrationsTable
                 registrations={acceptedRegistrations}
                 fetchData={fetchData}
             />
-            <Typography variant="h5">Deleted registrations</Typography>
+            <Typography variant="h5">
+                Deleted registrations ({deletedRegistrations.length})
+            </Typography>
             <RegistrationsTable
                 registrations={deletedRegistrations}
                 fetchData={fetchData}
