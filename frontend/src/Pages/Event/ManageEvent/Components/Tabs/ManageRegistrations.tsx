@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
+import { getSortedRegistrations } from "@/logic/events";
 import { IEvent } from "@/logic/interfaces";
 
 import RegistrationsTable from "./Components/RegistrationsTable";
@@ -13,16 +14,19 @@ const ManageRegistrations = ({
     eventData,
     fetchData,
 }: ManageRegistrationsProps) => {
-    const pendingRegistrations = eventData.registrations.filter(
-        (registration) => registration.status === "PENDING"
+    const pendingRegistrations = getSortedRegistrations(
+        eventData.registrations,
+        "PENDING"
     );
 
-    const acceptedRegistrations = eventData.registrations.filter(
-        (registration) => registration.status === "ACCEPTED"
+    const acceptedRegistrations = getSortedRegistrations(
+        eventData.registrations,
+        "ACCEPTED"
     );
 
-    const deletedRegistrations = eventData.registrations.filter(
-        (registration) => registration.status === "DELETED"
+    const deletedRegistrations = getSortedRegistrations(
+        eventData.registrations,
+        "DELETED"
     );
 
     return (

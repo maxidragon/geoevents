@@ -1,5 +1,5 @@
 import { getUserInfo, isAdmin } from "./auth";
-import { IEvent, Registration } from "./interfaces";
+import { IEvent, Registration, RegistrationStatus } from "./interfaces";
 import { backendRequest } from "./request";
 
 export const defaultEvent: IEvent = {
@@ -187,4 +187,21 @@ export const getApiKey = async (eventId: string) => {
         true
     );
     return await response.json();
+};
+
+export const getSortedRegistrations = (
+    registrations: Registration[],
+    status: RegistrationStatus
+) => {
+    return registrations
+        .filter((registration) => registration.status === status)
+        .sort((a, b) => {
+            if (a.user.fullName < b.user.fullName) {
+                return -1;
+            }
+            if (a.user.fullName > b.user.fullName) {
+                return 1;
+            }
+            return 0;
+        });
 };
