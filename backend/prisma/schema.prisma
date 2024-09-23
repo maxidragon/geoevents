@@ -49,6 +49,7 @@ model Event {
   enableKnockoutStage       Boolean
   isPublic                  Boolean
   useExternalRegistration   Boolean               @default(false)
+  limit                     Int?                  @default(0)
   mapId                     String?
   map                       Map?                  @relation(fields: [mapId], references: [id])
   proceedFromQualifications Int                   @default(0)

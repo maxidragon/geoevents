@@ -165,6 +165,7 @@ export class EventService {
         enableGroups: true,
         enableKnockoutStage: true,
         proceedFromQualifications: true,
+        limit: true,
         map: true,
         organizers: {
           select: {
@@ -258,6 +259,7 @@ export class EventService {
         useExternalRegistration: data.useExternalRegistration,
         autoAcceptRegistrations: data.autoAcceptRegistrations,
         enableQualifications: data.enableQualifications,
+        limit: data.limit,
         enableGroups: data.enableGroups,
         enableKnockoutStage: data.enableKnockoutStage,
         registrationOpen: data.registrationOpen,
@@ -304,6 +306,7 @@ export class EventService {
         address: data.address,
         startDate: data.startDate,
         endDate: data.endDate,
+        limit: data.limit,
         isPublic: data.isPublic,
         useExternalRegistration: data.useExternalRegistration,
         autoAcceptRegistrations: data.autoAcceptRegistrations,
@@ -455,7 +458,7 @@ export class EventService {
       },
     });
 
-    const registration = await this.prisma.registration.create({
+    await this.prisma.registration.create({
       data: {
         eventId: event.id,
         userId: user.id,
@@ -582,6 +585,24 @@ export class EventService {
 
     if (!registration) {
       throw new HttpException('Registration not found', 404);
+    }
+
+    const acceptedRegistrations = await this.prisma.registration.count({
+      where: {
+        eventId,
+        status: RegistrationStatus.ACCEPTED,
+      },
+    });
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+    if (acceptedRegistrations >= event.limit && event.limit > 0) {
+      throw new HttpException(
+        'Event has reached the maximum number of participants',
+        400,
+      );
     }
 
     await this.prisma.registration.update({

@@ -56,6 +56,10 @@ export class EventDto {
   @Min(0)
   proceedFromQualifications: number;
 
+  @IsNumber()
+  @Min(0)
+  limit: number;
+
   @IsArray()
   organizers: User[];
 }

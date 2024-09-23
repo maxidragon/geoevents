@@ -15,6 +15,7 @@ export interface IEvent {
     registrationOpen: Date;
     registrationClose: Date;
     address: string;
+    limit: number;
     autoAcceptRegistrations: boolean;
     enableQualifications: boolean;
     enableGroups: boolean;

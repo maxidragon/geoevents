@@ -108,6 +108,18 @@ const EventForm = ({ eventData, onSubmit }: EventFormProps) => {
             />
             <FormControl>
                 <TextField
+                    type="number"
+                    label="Limit"
+                    name="limit"
+                    value={editedEvent.limit}
+                    onChange={handleChange}
+                />
+                <FormHelperText sx={{ ml: 0, mt: 1 }}>
+                    Set to 0 for unlimited
+                </FormHelperText>
+            </FormControl>
+            <FormControl>
+                <TextField
                     label="Address"
                     name="address"
                     value={editedEvent.address}

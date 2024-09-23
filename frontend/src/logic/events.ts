@@ -11,6 +11,7 @@ export const defaultEvent: IEvent = {
     registrationClose: new Date(),
     address: "",
     isPublic: false,
+    limit: 0,
     useExternalRegistration: false,
     autoAcceptRegistrations: false,
     enableQualifications: true,
@@ -144,7 +145,10 @@ export const acceptRegistration = async (
         "POST",
         true
     );
-    return response.status;
+    return {
+        data: await response.json(),
+        status: response.status,
+    };
 };
 
 export const deleteRegistration = async (

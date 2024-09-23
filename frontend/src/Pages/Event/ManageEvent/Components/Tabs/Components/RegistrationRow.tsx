@@ -43,17 +43,20 @@ const RegistrationRow = ({ registration, fetchData }: RegistrationRowProps) => {
             description: "Are you sure you want to accept this registration?",
         })
             .then(async () => {
-                const status = await acceptRegistration(
+                const response = await acceptRegistration(
                     registration.eventId,
                     registration.id
                 );
-                if (status === 200) {
+                if (response.status === 200) {
                     enqueueSnackbar("Registration accepted", {
                         variant: "success",
                     });
                     fetchData();
                 } else {
                     enqueueSnackbar("Something went wrong", {
+                        variant: "error",
+                    });
+                    enqueueSnackbar(response.data.message, {
                         variant: "error",
                     });
                 }
