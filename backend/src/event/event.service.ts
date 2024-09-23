@@ -391,24 +391,32 @@ export class EventService {
 
     if (event.autoAcceptRegistrations) {
     } else {
-      await this.prisma.registration.update({
+      const registrationsCount = await this.prisma.registration.count({
         where: {
-          id: registration.id,
-        },
-        data: {
+          eventId,
           status: RegistrationStatus.ACCEPTED,
-          registrationHistory: {
-            create: {
-              action: RegistrationAction.ACCEPTED,
-              performedBy: {
-                connect: {
-                  id: userId,
+        },
+      });
+      if (registrationsCount <= event.limit || event.limit === 0) {
+        await this.prisma.registration.update({
+          where: {
+            id: registration.id,
+          },
+          data: {
+            status: RegistrationStatus.ACCEPTED,
+            registrationHistory: {
+              create: {
+                action: RegistrationAction.ACCEPTED,
+                performedBy: {
+                  connect: {
+                    id: userId,
+                  },
                 },
               },
             },
           },
-        },
-      });
+        });
+      }
     }
     return {
       message: 'Successfully registered for event',
@@ -623,6 +631,9 @@ export class EventService {
         },
       },
     });
+    return {
+      message: 'Registration accepted',
+    };
   }
 
   async deleteRegistration(
