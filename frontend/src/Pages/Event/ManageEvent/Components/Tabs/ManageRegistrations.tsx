@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import { getSortedRegistrations } from "@/logic/events";
 import { IEvent } from "@/logic/interfaces";
@@ -41,6 +41,19 @@ const ManageRegistrations = ({
             <Typography variant="h5">
                 Accepted registrations ({acceptedRegistrations.length})
             </Typography>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                    const emails = acceptedRegistrations.map(
+                        (registration) => registration.user.email
+                    );
+                    navigator.clipboard.writeText(emails.join(", "));
+                }}
+                sx={{ width: "fit-content" }}
+            >
+                Copy emails
+            </Button>
             <RegistrationsTable
                 registrations={acceptedRegistrations}
                 fetchData={fetchData}
