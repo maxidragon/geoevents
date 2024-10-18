@@ -196,6 +196,7 @@ export class EventService {
                     fullName: true,
                   },
                 },
+                comment: hasPermission ? true : false,
               },
             },
           },
